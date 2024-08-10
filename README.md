@@ -1,4 +1,5 @@
 Bu kod, belirli bir URL yapısına sahip rastgele linkler oluşturarak geçerliliklerini test eder ve proxy'ler kullanarak bu testleri gerçekleştirir. Geçerli olan linkleri bir dosyaya kaydeder. Aşağıda kodun işleyişini ve uygulamanın nasıl kullanılacağını adım adım açıklayan bir rehber bulabilirsiniz:
+![Uploading image.png…]()
 
 ### Kodun Açıklaması
 
