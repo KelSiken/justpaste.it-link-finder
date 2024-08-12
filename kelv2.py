@@ -12,6 +12,7 @@ from colorama import Fore, init
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from selenium.common.exceptions import WebDriverException
 
 # Konsol renklerini etkinleştir
 init(autoreset=True)
@@ -23,7 +24,7 @@ base_url = "https://justpaste.it/"
 valid_file = "valid.txt"
 
 # Discord Webhook URL'si
-discord_webhook_url = "https://discord.com/api/webhooks/
+discord_webhook_url = "https://discord.com/api/webhooks/1128841469290090496/akVrFH36MOZiSRVEsyRKlqCRm01ltOjupzzujZJ8fof8MPRxoQJgG7IHOsB2vBcO8xI7"
 
 # Yapılandırma dosyası
 config_file = "config.json"
@@ -117,9 +118,16 @@ def take_screenshot(url, chromedriver_path, file_path="screenshot.png"):
 
     service = Service(chromedriver_path)
     driver = webdriver.Chrome(service=service, options=chrome_options)
-    driver.get(url)
-    driver.save_screenshot(file_path)
-    driver.quit()
+
+    try:
+        driver.get(url)
+        driver.save_screenshot(file_path)
+    except WebDriverException as e:
+        print(Fore.RED + f"WebDriver hatası: {e}")
+        close_existing_chrome_sessions()  # Chrome tarayıcılarını kapat
+        restart_program()  # Programı yeniden başlat
+    finally:
+        driver.quit()
 
 def send_to_discord(url, proxy, file_path):
     with open(file_path, 'rb') as file:
@@ -128,9 +136,7 @@ def send_to_discord(url, proxy, file_path):
             "content": f"Geçerli URL: {url} (proxy: {proxy})"
         }
         response = requests.post(discord_webhook_url, data=data, files=files)
-        if response.status_code == 204:
-            print(Fore.GREEN + "Discord'a başarıyla gönderildi.")
-        if response.status_code == 200:
+        if response.status_code == 204 or response.status_code == 200:
             print(Fore.GREEN + "Discord'a başarıyla gönderildi.")
         else:
             print(Fore.RED + "Discord gönderimi başarısız oldu.")
