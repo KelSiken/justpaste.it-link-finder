@@ -2,183 +2,184 @@ Bu kod, belirli bir URL yapısına sahip rastgele linkler oluşturarak geçerlil
 ![image](https://github.com/user-attachments/assets/6e0151f6-7231-4849-8845-0631c55995fe)
 
 
-### Kodun Açıklaması
+Code Overview
+The code generates random links with a specific URL structure, tests their validity, and performs these tests using proxies. Valid links are saved to a file. Below is a step-by-step guide explaining the functionality of the code and how to use the application.
 
-1. **Gerekli Kütüphaneler**:
-   - `requests`: HTTP istekleri yapmak için.
-   - `string` ve `random`: Rastgele karakterler üretmek için.
-   - `time`: İstekler arasında bekleme süresi eklemek için.
-   - `tkinter`: Kullanıcıdan dosya ve URL almak için grafiksel arayüz.
-   - `colorama`: Konsol renklerini yönetmek için.
+Required Libraries:
 
-2. **Fonksiyonlar**:
-   - `generate_random_suffix(length=5)`: Belirtilen uzunlukta rastgele bir URL uzantısı üretir.
-   - `check_url(link, proxies=None)`: URL'nin geçerli olup olmadığını kontrol eder. Proxy kullanımı opsiyoneldir.
-   - `load_proxies(file_path)`: Belirtilen dosyadan proxy'leri okur ve bir liste olarak döner.
-   - `select_file()`: Proxy listesi içeren bir dosya seçmek için bir dosya seçici açar.
-   - `get_valid_url()`: Kullanıcıdan geçerli bir URL girmesini ister ve bu URL'nin geçerli olup olmadığını kontrol eder.
+requests: For making HTTP requests.
+string and random: For generating random characters.
+time: For adding delays between requests.
+tkinter: For a graphical interface to get files and URLs from the user.
+colorama: For managing console colors.
+Functions:
 
-3. **Ana Fonksiyon (`main`)**:
-   - Kullanıcıdan geçerli bir URL alır.
-   - Proxy listesi içeren dosyayı seçer ve proxy'leri yükler.
-   - Sonsuz döngüde rastgele URL'ler oluşturur, bu URL'leri proxy'ler kullanarak kontrol eder ve geçerli olanları dosyaya kaydeder.
+generate_random_suffix(length=5): Generates a random URL suffix of the specified length.
+check_url(link, proxies=None): Checks if a URL is valid. Proxy usage is optional.
+load_proxies(file_path): Reads proxies from the specified file and returns them as a list.
+select_file(): Opens a file selector to choose a proxy list file.
+get_valid_url(): Asks the user to enter a valid URL and checks its validity.
+Main Function (main):
 
-### Uygulamanın Çalışması İçin Adımlar
+Retrieves a valid URL from the user.
+Selects a file containing the proxy list and loads the proxies.
+In an infinite loop, generates random URLs, checks these URLs using the proxies, and saves valid ones to a file.
+Steps to Run the Application
 
-1. **Python ve Kütüphaneleri Kurun**:
-   - Python 3.x'in bilgisayarınızda yüklü olduğundan emin olun.
-   - Gerekli Python kütüphanelerini yükleyin:
-     ```bash
-     pip install requests colorama
-     ```
+Install Python and Libraries:
 
-2. **Python Kodunu Kaydedin**:
-   - Aşağıdaki Python kodunu bir dosyaya (örneğin, `proxy_url_checker.py`) yapıştırın ve kaydedin:
+Ensure Python 3.x is installed on your computer.
+Install the required Python libraries:
+bash
+Kodu kopyala
+pip install requests colorama
+Save the Python Code:
 
-     ```python
-     import requests
-     import string
-     import random
-     import time
-     import tkinter as tk
-     from tkinter import simpledialog, filedialog
-     from colorama import Fore, init
+Copy and paste the following Python code into a file (e.g., proxy_url_checker.py):
 
-     # Konsol renklerini etkinleştir
-     init(autoreset=True)
+python
+Kodu kopyala
+import requests
+import string
+import random
+import time
+import tkinter as tk
+from tkinter import simpledialog, filedialog
+from colorama import Fore, init
 
-     # URL yapısının sabit kısmı
-     base_url = "https://justpaste.it/"
+# Enable console colors
+init(autoreset=True)
 
-     # Geçerli linkleri kaydetmek için dosya
-     valid_file = "valid.txt"
+# Base URL part
+base_url = "https://justpaste.it/"
 
-     def generate_random_suffix(length=5):
-         return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+# File to save valid links
+valid_file = "valid.txt"
 
-     def check_url(link, proxies=None):
-         try:
-             response = requests.get(link, timeout=5, proxies=proxies)
-             if 200 <= response.status_code < 400:
-                 return True
-         except requests.exceptions.RequestException as e:
-             print(Fore.RED + f"Hata: {e}")
-         return False
+# Discord Webhook URL
+webhook_url = "YOUR_DISCORD_WEBHOOK_URL"
 
-     def load_proxies(file_path):
-         with open(file_path, 'r') as file:
-             proxies = file.read().splitlines()
-         return proxies
+def generate_random_suffix(length=5):
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
 
-     def select_file():
-         root = tk.Tk()
-         root.withdraw()  # Ana pencereyi gizle
-         file_path = filedialog.askopenfilename(title="Proxy Listesi Seçin", filetypes=[("Text Files", "*.txt")])
-         return file_path
+def check_url(link, proxies=None):
+    try:
+        response = requests.get(link, timeout=5, proxies=proxies)
+        if 200 <= response.status_code < 400:
+            return True
+    except requests.exceptions.RequestException as e:
+        print(Fore.RED + f"Error: {e}")
+    return False
 
-     def get_valid_url():
-         root = tk.Tk()
-         root.withdraw()  # Ana pencereyi gizle
+def load_proxies(file_path):
+    with open(file_path, 'r') as file:
+        proxies = file.read().splitlines()
+    return proxies
 
-         while True:
-             url = simpledialog.askstring("Geçerli URL Girin", "Bir geçerli URL girin:")
-             if url and check_url(url):
-                 return url
-             print(Fore.RED + "Girdiğiniz URL geçerli değil veya erişilemez. Lütfen tekrar deneyin.")
+def select_file():
+    root = tk.Tk()
+    root.withdraw()  # Hide the main window
+    file_path = filedialog.askopenfilename(title="Select Proxy List", filetypes=[("Text Files", "*.txt")])
+    return file_path
 
-     def main():
-         valid_url = get_valid_url()
-         print(Fore.YELLOW + f"Geçerli URL alındı: {valid_url}")
+def get_valid_url():
+    root = tk.Tk()
+    root.withdraw()  # Hide the main window
 
-         proxy_file = select_file()
-         if not proxy_file:
-             print(Fore.RED + "Proxy dosyası seçilmedi. Program sonlandırılıyor.")
-             return
+    while True:
+        url = simpledialog.askstring("Enter Valid URL", "Please enter a valid URL:")
+        if url and check_url(url):
+            return url
+        print(Fore.RED + "The URL you entered is invalid or inaccessible. Please try again.")
 
-         proxies_list = load_proxies(proxy_file)
-         if not proxies_list:
-             print(Fore.RED + "Proxy listesi boş. Program sonlandırılıyor.")
-             return
+def send_to_discord(message):
+    try:
+        data = {"content": message}
+        requests.post(webhook_url, json=data)
+    except Exception as e:
+        print(Fore.RED + f"Error sending message to Discord: {e}")
 
-         print(Fore.YELLOW + "Proxy listesi yüklendi. URL denemeleri başlayacak...")
+def main():
+    valid_url = get_valid_url()
+    print(Fore.YELLOW + f"Valid URL obtained: {valid_url}")
 
-         with open(valid_file, "a") as file:
-             while True:
-                 for proxy in proxies_list:
-                     proxy_dict = {"http": proxy, "https": proxy}
-                     suffix = generate_random_suffix()
-                     link = base_url + suffix
+    proxy_file = select_file()
+    if not proxy_file:
+        print(Fore.RED + "No proxy file selected. Exiting the program.")
+        return
 
-                     if check_url(link, proxies=proxy_dict):
-                         try:
-                             file.write(f"{link} (proxy: {proxy})\n")
-                             file.flush()
-                             print(Fore.GREEN + "+" + f" {link} (proxy: {proxy}) (kaydedildi)")
-                         except Exception as e:
-                             print(Fore.RED + "-" + f" {link} (proxy: {proxy}) (kaydedilemedi: {e})")
-                     else:
-                         print(Fore.RED + "-" + f" {link} (proxy: {proxy})")
+    proxies_list = load_proxies(proxy_file)
+    if not proxies_list:
+        print(Fore.RED + "Proxy list is empty. Exiting the program.")
+        return
 
-                     time.sleep(1)
+    print(Fore.YELLOW + "Proxy list loaded. URL testing will begin...")
 
-     if __name__ == "__main__":
-         main()
-     ```
+    with open(valid_file, "a") as file:
+        while True:
+            for proxy in proxies_list:
+                proxy_dict = {"http": proxy, "https": proxy}
+                suffix = generate_random_suffix()
+                link = base_url + suffix
 
-1. Gerekli Kütüphaneler ve Araçlar
-Python: Python 3.x versiyonu gereklidir.
+                if check_url(link, proxies=proxy_dict):
+                    try:
+                        file.write(f"{link} (proxy: {proxy})\n")
+                        file.flush()
+                        message = f"Valid URL: {link} (proxy: {proxy})"
+                        send_to_discord(message)
+                        print(Fore.GREEN + "+" + f" {link} (proxy: {proxy}) (saved)")
+                    except Exception as e:
+                        print(Fore.RED + "-" + f" {link} (proxy: {proxy}) (could not be saved: {e})")
+                else:
+                    print(Fore.RED + "-" + f" {link} (proxy: {proxy})")
 
-Kütüphaneler: Kodun çalışması için bazı kütüphaneler yüklenmiş olmalıdır:
+                time.sleep(1)
 
-requests
-selenium
-colorama
-tkinter (Python'un standart kütüphanesi olarak gelir, ayrıca yüklenmesine gerek yoktur)
-webdriver-manager (Opsiyonel, Chromedriver için alternatif bir yöntem)
-Bu kütüphaneleri yüklemek için terminalde şu komutu çalıştırabilirsiniz:
+if __name__ == "__main__":
+    main()
+Required Tools and Settings:
 
+Python: Requires Python 3.x.
+Libraries: The code needs some libraries to be installed:
 bash
 Kodu kopyala
 pip install requests selenium colorama
-Chromedriver: Selenium ile Chrome tarayıcısını kontrol etmek için gerekli. Buradan uygun versiyonu indirebilirsiniz.
+Chromedriver: Necessary for controlling the Chrome browser with Selenium. Download the appropriate version from here.
+Prepare Files and Settings:
 
-2. Dosya ve Ayarların Hazırlanması
-Chromedriver Dosyası: Chromedriver'ın bilgisayarınızdaki yolu gerekecek. Bu dosyayı indirip yerel bir dizine koyun.
-
-Proxy Listesi: Proxy adreslerini içeren bir metin dosyası oluşturun. Her satıra bir proxy adresi olacak şekilde düzenleyin. Örneğin:
-
+Chromedriver File: You’ll need the path to the Chromedriver file on your computer. Download it and place it in a local directory.
+Proxy List: Create a text file containing proxy addresses. Each line should have one proxy address, for example:
 makefile
 Kodu kopyala
 104.207.38.25:3128
 123.456.78.90:8080
-Discord Webhook URL'si: Discord sunucunuzda bir webhook oluşturun ve URL'yi alın. Discord Webhook Dokümantasyonu ile ilgili bilgi alabilirsiniz.
+Discord Webhook URL: Create a webhook in your Discord server and get the URL. You need to replace YOUR_DISCORD_WEBHOOK_URL in the code with the actual URL of your webhook. Refer to the Discord Webhook Documentation for more information.
+Running the Code:
 
-3. Kodun Kullanımı
-Kodun Çalıştırılması:
-
-Kod dosyasını (örneğin script.py olarak kaydedin) Python ile çalıştırın:
+Run the script file (e.g., script.py) using Python:
 bash
 Kodu kopyala
 python script.py
-İlk Çalıştırma:
+First Run:
 
-İlk kez çalıştırdığınızda, program sizden Chromedriver dosyasını ve proxy listesini seçmenizi ister. Bu seçimler config.json dosyasına kaydedilir, böylece sonraki çalıştırmalarda bu seçimleri tekrar yapmanız gerekmez.
-Prosedürler:
+On the first run, the program will ask you to select the Chromedriver file and proxy list. These selections will be saved in a config.json file, so you won’t need to make these selections again in future runs.
+Procedures:
+Proxy List Selection: Choose the file containing your proxy list.
+Chromedriver Selection: Choose the path to the Chromedriver file.
+URL Validation: The program will ask you to enter a valid URL and test its accessibility.
+Continuous Operation:
 
-Proxy Listesi Seçimi: Proxy liste dosyanızın yolunu seçin.
-Chromedriver Seçimi: Chromedriver dosyanızın yolunu seçin.
-URL Doğrulama: Program, geçerli bir URL girmenizi isteyecek ve URL'nin erişilebilirliğini test edecektir.
-Sürekli Çalışma:
+The program tests randomly generated URLs with each proxy listed. When valid URLs are found, it saves them along with the proxy information to valid.txt and sends a message to Discord.
+Program Restart:
 
-Program, proxy listesinde belirtilen her proxy ile rastgele oluşturulmuş URL'leri test eder.
-Geçerli URL'leri bulduğunda, ekran görüntüsünü alır ve Discord'a gönderir.
-Geçerli URL'leri ve proxy bilgilerini valid.txt dosyasına kaydeder.
-4. Programın Yeniden Başlatılması
-Program bir hata ile karşılaştığında otomatik olarak kendini yeniden başlatır. Bu, kodun kesintisiz bir şekilde çalışmasını sağlar.
+The program automatically restarts itself in case of errors to ensure uninterrupted operation.
+Important Notes:
 
-5. Önemli Notlar
-Yüksek Sistem Kaynağı Kullanımı: Ekran görüntüsü almak ve çeşitli URL'leri test etmek, sistem kaynaklarını (CPU ve bellek) tüketebilir.
-Yasal Durum: Proxy kullanımı ve web scraping işlemleri yasal sorunlara yol açabilir. Hedef sitelerin kullanım şartlarını kontrol ettiğinizden emin olun.
+High System Resource Usage: Taking screenshots and testing various URLs can consume system resources (CPU and memory).
+Legal Considerations: Proxy usage and web scraping may have legal implications. Make sure to check the terms of use of the target websites.
+Summary
+This application generates random links with a specific URL structure, tests their validity using proxies, and saves valid links to a file. It also sends notifications to Discord for valid URLs. Ensure you provide the correct proxy list and valid URL for the application to work effectively.
 
 ### Özet
 
