@@ -24,7 +24,7 @@ base_url = "https://justpaste.me/"
 valid_file = "valid.txt"
 
 # Discord Webhook URL'si
-discord_webhook_url = "https://discord.com/api/webhooks/1272248921963368518/-ILbc1tKD2CkJmsLm9fBuWsWWGi6GoR7M0cNIYdDkoNVRz3Dt9wqzA0VyRz62tI7QdMs"
+discord_webhook_url = "https://discord.com/api/webhooks/s"
 
 # Yapılandırma dosyası
 config_file = "config.json"
