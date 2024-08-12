@@ -125,30 +125,60 @@ Bu kod, belirli bir URL yapısına sahip rastgele linkler oluşturarak geçerlil
          main()
      ```
 
-3. **Proxy Listesi Oluşturun**:
-   - Proxy'leri içeren bir `.txt` dosyası oluşturun. Her satıra bir proxy IP adresi veya URL'si yazın. Örneğin:
-     ```
-     http://proxy1.example.com:8080
-     http://proxy2.example.com:8080
-     ```
+1. Gerekli Kütüphaneler ve Araçlar
+Python: Python 3.x versiyonu gereklidir.
 
-4. **Uygulamayı Çalıştırın**:
-   - Terminal veya komut istemcisini açın ve aşağıdaki komutu çalıştırarak uygulamayı başlatın:
-     ```bash
-     python proxy_url_checker.py
-     ```
+Kütüphaneler: Kodun çalışması için bazı kütüphaneler yüklenmiş olmalıdır:
 
-5. **Geçerli URL Girin**:
-   - Uygulama başladığında, bir pencere açılacak ve geçerli bir URL girmeniz istenecek. Girilen URL'nin geçerli olup olmadığını kontrol edecektir.
+requests
+selenium
+colorama
+tkinter (Python'un standart kütüphanesi olarak gelir, ayrıca yüklenmesine gerek yoktur)
+webdriver-manager (Opsiyonel, Chromedriver için alternatif bir yöntem)
+Bu kütüphaneleri yüklemek için terminalde şu komutu çalıştırabilirsiniz:
 
-6. **Proxy Listesi Seçin**:
-   - Proxy listesi içeren `.txt` dosyasını seçmek için bir dosya seçici penceresi açılacak. Proxy listesini içeren dosyayı seçin.
+bash
+Kodu kopyala
+pip install requests selenium colorama
+Chromedriver: Selenium ile Chrome tarayıcısını kontrol etmek için gerekli. Buradan uygun versiyonu indirebilirsiniz.
 
-7. **Geçerli Linklerin Kaydedilmesini İzleyin**:
-   - Uygulama, proxy'leri kullanarak rastgele URL'ler oluşturacak ve geçerli olanları `valid.txt` dosyasına kaydedecektir. Geçerli olan linkler ve kullanılan proxy bilgisi dosyaya yazılacaktır.
+2. Dosya ve Ayarların Hazırlanması
+Chromedriver Dosyası: Chromedriver'ın bilgisayarınızdaki yolu gerekecek. Bu dosyayı indirip yerel bir dizine koyun.
 
-8. **İstekler Arasında Bekleme Süresi**:
-   - İstekler arasında 1 saniyelik bir bekleme süresi uygulanır. Bu süreyi değiştirmek isterseniz, `time.sleep(1)` satırını güncelleyebilirsiniz.
+Proxy Listesi: Proxy adreslerini içeren bir metin dosyası oluşturun. Her satıra bir proxy adresi olacak şekilde düzenleyin. Örneğin:
+
+makefile
+Kodu kopyala
+104.207.38.25:3128
+123.456.78.90:8080
+Discord Webhook URL'si: Discord sunucunuzda bir webhook oluşturun ve URL'yi alın. Discord Webhook Dokümantasyonu ile ilgili bilgi alabilirsiniz.
+
+3. Kodun Kullanımı
+Kodun Çalıştırılması:
+
+Kod dosyasını (örneğin script.py olarak kaydedin) Python ile çalıştırın:
+bash
+Kodu kopyala
+python script.py
+İlk Çalıştırma:
+
+İlk kez çalıştırdığınızda, program sizden Chromedriver dosyasını ve proxy listesini seçmenizi ister. Bu seçimler config.json dosyasına kaydedilir, böylece sonraki çalıştırmalarda bu seçimleri tekrar yapmanız gerekmez.
+Prosedürler:
+
+Proxy Listesi Seçimi: Proxy liste dosyanızın yolunu seçin.
+Chromedriver Seçimi: Chromedriver dosyanızın yolunu seçin.
+URL Doğrulama: Program, geçerli bir URL girmenizi isteyecek ve URL'nin erişilebilirliğini test edecektir.
+Sürekli Çalışma:
+
+Program, proxy listesinde belirtilen her proxy ile rastgele oluşturulmuş URL'leri test eder.
+Geçerli URL'leri bulduğunda, ekran görüntüsünü alır ve Discord'a gönderir.
+Geçerli URL'leri ve proxy bilgilerini valid.txt dosyasına kaydeder.
+4. Programın Yeniden Başlatılması
+Program bir hata ile karşılaştığında otomatik olarak kendini yeniden başlatır. Bu, kodun kesintisiz bir şekilde çalışmasını sağlar.
+
+5. Önemli Notlar
+Yüksek Sistem Kaynağı Kullanımı: Ekran görüntüsü almak ve çeşitli URL'leri test etmek, sistem kaynaklarını (CPU ve bellek) tüketebilir.
+Yasal Durum: Proxy kullanımı ve web scraping işlemleri yasal sorunlara yol açabilir. Hedef sitelerin kullanım şartlarını kontrol ettiğinizden emin olun.
 
 ### Özet
 
