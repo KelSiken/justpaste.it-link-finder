@@ -19,7 +19,7 @@ base_url = "https://justpaste.it/"
 valid_file = "valid.txt"
 
 # Discord Webhook URL'si
-discord_webhook_url = "https://discord.com/api/webhooks/1128841469290090496/akVrFH36MOZiSRVEsyRKlqCRm01ltOjupzzujZJ8fof8MPRxoQJgG7IHOsB2vBcO8xI7"
+discord_webhook_url = "https://discord.com/api/webhooks/x"
 
 def generate_random_suffix(length=5):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
