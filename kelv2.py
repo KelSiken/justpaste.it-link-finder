@@ -1,7 +1,11 @@
+import os
+import json
+import sys
 import requests
 import string
 import random
 import time
+import subprocess
 import tkinter as tk
 from tkinter import simpledialog, filedialog, messagebox
 from colorama import Fore, init
@@ -19,7 +23,41 @@ base_url = "https://justpaste.it/"
 valid_file = "valid.txt"
 
 # Discord Webhook URL'si
-discord_webhook_url = "https://discord.com/api/webhooks/x"
+discord_webhook_url = "https://discord.com/api/webhooks/1128841469290090496/akVrFH36MOZiSRVEsyRKlqCRm01ltOjupzzujZJ8fof8MPRxoQJgG7IHOsB2vBcO8xI7"
+
+# Yapılandırma dosyası
+config_file = "config.json"
+
+def save_config(chromedriver_path, proxy_file):
+    config_data = {
+        "chromedriver_path": chromedriver_path,
+        "proxy_file": proxy_file
+    }
+    with open(config_file, 'w') as f:
+        json.dump(config_data, f)
+
+def load_config():
+    if os.path.exists(config_file):
+        with open(config_file, 'r') as f:
+            return json.load(f)
+    return None
+
+def close_existing_chrome_sessions():
+    try:
+        # Tüm Chrome tarayıcılarını kapatmak için taskkill komutunu kullan
+        subprocess.call(["taskkill", "/F", "/IM", "chrome.exe"], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+    except Exception as e:
+        print(Fore.RED + f"Chrome tarayıcılarını kapatırken hata oluştu: {e}")
+
+def restart_program():
+    print(Fore.YELLOW + "Program yeniden başlatılıyor...")
+
+    # Chrome tarayıcılarını kapat
+    close_existing_chrome_sessions()
+
+    python = sys.executable
+    os.execv(python, [python] + sys.argv)
+    os._exit(0)  # Mevcut program sürecini sonlandır
 
 def generate_random_suffix(length=5):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
@@ -31,6 +69,7 @@ def check_url(link, proxies=None):
             return True
     except requests.exceptions.RequestException as e:
         print(Fore.RED + f"Hata: {e}")
+        restart_program()  # Hata durumunda programı yeniden başlat
     return False
 
 def load_proxies(file_path):
@@ -53,6 +92,7 @@ def get_valid_url():
         if url and check_url(url):
             return url
         print(Fore.RED + "Girdiğiniz URL geçerli değil veya erişilemez. Lütfen tekrar deneyin.")
+        restart_program()  # Hata durumunda programı yeniden başlat
 
 def open_chrome_with_chromedriver_path():
     root = tk.Tk()
@@ -64,6 +104,7 @@ def open_chrome_with_chromedriver_path():
     
     if not chromedriver_path:
         print(Fore.RED + "Chromedriver dosyası seçilmedi. Program sonlandırılıyor.")
+        restart_program()  # Hata durumunda programı yeniden başlat
         return None
 
     return chromedriver_path
@@ -89,33 +130,33 @@ def send_to_discord(url, proxy, file_path):
         response = requests.post(discord_webhook_url, data=data, files=files)
         if response.status_code == 204:
             print(Fore.GREEN + "Discord'a başarıyla gönderildi.")
+        if response.status_code == 200:
+            print(Fore.GREEN + "Discord'a başarıyla gönderildi.")
         else:
             print(Fore.RED + "Discord gönderimi başarısız oldu.")
-
-def show_error(message):
-    root = tk.Tk()
-    root.withdraw()  # Ana pencereyi gizle
-    messagebox.showerror("Hata", message)
+            restart_program()  # Hata durumunda programı yeniden başlat
 
 def main():
-    # Kullanıcıdan geçerli bir URL al
-    valid_url = get_valid_url()
-    print(Fore.YELLOW + f"Geçerli URL alındı: {valid_url}")
+    config = load_config()
+    if config:
+        chromedriver_path = config["chromedriver_path"]
+        proxy_file = config["proxy_file"]
+        print(Fore.YELLOW + "Önceki ayarlar yüklendi.")
+    else:
+        chromedriver_path = open_chrome_with_chromedriver_path()
+        if not chromedriver_path:
+            return
 
-    # Proxy listesini seçme
-    proxy_file = select_file()
-    if not proxy_file:
-        print(Fore.RED + "Proxy dosyası seçilmedi. Program sonlandırılıyor.")
-        return
-    
+        proxy_file = select_file()
+        if not proxy_file:
+            print(Fore.RED + "Proxy dosyası seçilmedi. Program sonlandırılıyor.")
+            return
+        
+        save_config(chromedriver_path, proxy_file)
+
     proxies_list = load_proxies(proxy_file)
     if not proxies_list:
         print(Fore.RED + "Proxy listesi boş. Program sonlandırılıyor.")
-        return
-
-    # Kullanıcıdan chromedriver yolunu seçmesini isteyin
-    chromedriver_path = open_chrome_with_chromedriver_path()
-    if not chromedriver_path:
         return
 
     print(Fore.YELLOW + "Proxy listesi yüklendi. URL denemeleri başlayacak...")
@@ -144,7 +185,7 @@ def main():
 
                     except Exception as e:
                         print(Fore.RED + "-" + f" {link} (proxy: {proxy}) (kaydedilemedi: {e})")
-                        show_error(f"URL {link} (proxy: {proxy}) ekran görüntüsü alınırken veya Discord'a gönderilirken hata oluştu: {e}")
+                        restart_program()  # Hata durumunda programı yeniden başlat
                 else:
                     print(Fore.RED + "-" + f" {link} (proxy: {proxy})")
                 
