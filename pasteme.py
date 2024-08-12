@@ -24,7 +24,7 @@ base_url = "https://justpaste.me/"
 valid_file = "valid.txt"
 
 # Discord Webhook URL'si
-discord_webhook_url = "https://discord.com/api/webhooks/"
+discord_webhook_url = "https://discord.com/api/webhooks/1272248921963368518/-ILbc1tKD2CkJmsLm9fBuWsWWGi6GoR7M0cNIYdDkoNVRz3Dt9wqzA0VyRz62tI7QdMs"
 
 # Yapılandırma dosyası
 config_file = "config.json"
@@ -109,6 +109,7 @@ def open_chrome_with_chromedriver_path():
 
 def take_screenshot(url, chromedriver_path, file_path="screenshot.png"):
     chrome_options = Options()
+    chrome_options.add_argument("--headless")  # Tarayıcıyı görünmez modda aç
     chrome_options.add_argument("--start-maximized")  # Tarayıcıyı tam ekran aç
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
